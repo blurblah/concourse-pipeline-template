@@ -15,10 +15,6 @@ inputs:
 outputs:
 - name: build-out-repo
 
-params:
-  GIT_EMAIL: ((git.email))
-  GIT_USERNAME: ((git.username))
-
 run:
   path: /bin/bash
   args:

@@ -36,6 +36,9 @@ jobs:
   - get: out-repo
   - task: task-build
     file: pipeline-repo/ci/tasks/build-and-test.yml
+    params:
+      GIT_EMAIL: ((git.email))
+      GIT_USERNAME: ((git.username))
   - put: out-repo
     params:
       repository: out-repo
