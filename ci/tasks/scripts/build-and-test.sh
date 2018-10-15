@@ -20,9 +20,9 @@ mv -f ../source-repo/target ./
 ls -al target
 
 FILENAME=`basename $(ls target/*.jar)`
-FILE_WO_EXT=${FILENAME%.*}
+FILENAME_WO_EXT=${FILENAME%.*}
 mkdir $FILENAME_WO_EXT
-cp target/*.jar ${FILE_WO_EXT}/${FILENAME_WO_EXT}-${COMMIT_HASH}.jar
+cp target/*.jar ${FILENAME_WO_EXT}/${FILENAME_WO_EXT}-${COMMIT_HASH}.jar
 ls -al $FILENAME_WO_EXT
 
 git config --global user.email "${GIT_EMAIL}"
