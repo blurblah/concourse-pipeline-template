@@ -30,4 +30,4 @@ git config --global user.email "${GIT_EMAIL}"
 git config --global user.name "${GIT_USERNAME}"
 git status
 git add .
-git commit -m "[CI] Pushing jar ${FILENAME_WO_EXT}-${COMMIT_HASH}.jar"
+git commit -m "[CI] Push jar ${FILENAME_WO_EXT}-${COMMIT_HASH}.jar"
