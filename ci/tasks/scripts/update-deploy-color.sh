@@ -10,7 +10,7 @@ chmod +x fly
 ./fly -t local get-pipeline -p ${CONCOURSE_PIPELINE} > original-pipeline.yml
 
 # TODO: Decide color
-COLOR=$(cat original_pipeline.yml | grep '\- name: Deploy-*' | cut -d':' -f2 | cut -d'-' -f2)
+COLOR=$(cat original-pipeline.yml | grep '\- name: Deploy-*' | cut -d':' -f2 | cut -d'-' -f2)
 if [ "$COLOR" == "blue" ]
 then
     NEXT_COLOR="green"
