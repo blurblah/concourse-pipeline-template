@@ -4,9 +4,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    #repository: pivotalservices/docker-concourse-cf-tools
-    repository: concourse/buildroot
-    tag: "git"
+    repository: pivotalservices/docker-concourse-cf-tools
 
 inputs:
 - name: pipeline-repo
