@@ -2,8 +2,8 @@
 groups:
 - name: main
   jobs:
-  - Build-and-Test
-#  - Deploy Blue
+  - Build-and-test
+  - Deploy-blue
 #  - System Test
 #  - Rollback
 
@@ -34,12 +34,20 @@ jobs:
     trigger: true
   - get: pipeline-repo
   - get: out-repo
-  - task: task-build
-    file: pipeline-repo/ci/tasks/build-and-test.yml
-    params:
-      GIT_EMAIL: ((git.email))
-      GIT_USERNAME: ((git.username))
-  - put: out-repo
-    params:
-      repository: build-out-repo
-      rebase: true
+#  - task: task-build
+#    file: pipeline-repo/ci/tasks/build-and-test.yml
+#    params:
+#      GIT_EMAIL: ((git.email))
+#      GIT_USERNAME: ((git.username))
+#  - put: out-repo
+#    params:
+#      repository: build-out-repo
+#      rebase: true
+  - task: task-update-deploy-color
+    file: pipeline-repo/ci/tasks/update-deploy-color.yml
+
+- name: Deploy-blue
+  plan:
+  - get: out-repo
+    trigger: true
+    passed: [Build-and-Test]
