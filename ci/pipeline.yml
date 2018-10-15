@@ -28,7 +28,7 @@ resources:
     private_key: ((git.private_key))
 
 jobs:
-- name: Build-and-Test
+- name: Build-and-test
   plan:
   - get: source-repo
     trigger: true
@@ -50,4 +50,4 @@ jobs:
   plan:
   - get: out-repo
     trigger: true
-    passed: [Build-and-Test]
+    passed: [Build-and-test]
