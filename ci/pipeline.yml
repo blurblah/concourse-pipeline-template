@@ -1,0 +1,34 @@
+---
+groups:
+- name: main
+  jobs:
+  - Build-and-Test
+#  - Deploy Blue
+#  - System Test
+#  - Rollback
+
+resources:
+- name: source-repo
+  type: git
+  source:
+    branch: ((git.source.branch))
+    uri: ((git.source.uri))
+    private_key: ((git.private_key))
+- name: out-repo
+  type: git
+  source:
+    branch: master
+    uri: ((git.out.uri))
+    private_key: ((git.private_key))
+
+jobs:
+- name: Build-and-Test
+  plan:
+  - get: source-repo
+    trigger: true
+  - get: out-repo
+  - task: task-build
+    file: tasks/build-and-test.yml
+    params:
+      GIT_EMAIL: ((git.email))
+      GIT_USERNAME: ((git.username))
