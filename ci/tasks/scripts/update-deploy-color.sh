@@ -23,3 +23,8 @@ sed "s/Deploy-.*/Deploy-${NEXT_COLOR}/" original-pipeline.yml > updated-pipeline
 cat updated-pipeline.yml
 
 ./fly -t local set-pipeline -p ${CONCOURSE_PIPELINE} -c updated-pipeline.yml -n
+
+cd ../../build-out-repo
+cat NEXT_COLOR > color_to_deploy.txt
+git add .
+git commit -m "[CI] Push color info"

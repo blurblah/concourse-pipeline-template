@@ -4,8 +4,8 @@ groups:
   jobs:
   - Build-and-test
   - Deploy-blue
-#  - System Test
-#  - Rollback
+  - System Test
+  - Rollback
 
 resources:
 - name: source-repo
@@ -34,11 +34,11 @@ jobs:
     trigger: true
   - get: pipeline-repo
   - get: out-repo
-#  - task: task-build
-#    file: pipeline-repo/ci/tasks/build-and-test.yml
-#    params:
-#      GIT_EMAIL: ((git.email))
-#      GIT_USERNAME: ((git.username))
+  - task: task-build
+    file: pipeline-repo/ci/tasks/build-and-test.yml
+    params:
+      GIT_EMAIL: ((git.email))
+      GIT_USERNAME: ((git.username))
 #  - put: out-repo
 #    params:
 #      repository: build-out-repo
@@ -47,13 +47,32 @@ jobs:
     file: pipeline-repo/ci/tasks/update-deploy-color.yml
     params:
       CONCOURSE_URL: ((concourse.url))
-      #CONCOURSE_TEAM:
       CONCOURSE_PIPELINE: ((concourse.pipeline))
       CONCOURSE_USERNAME: ((concourse.username))
       CONCOURSE_PASSWORD: ((concourse.password))
+  - put: out-repo
+    params:
+      repository: build-out-repo
+      rebase: true
 
 - name: Deploy-blue
   plan:
   - get: out-repo
     trigger: true
     passed: [Build-and-test]
+  - task: task-deploy
+    file: pipeline-repo/ci/tasks/deploy.yml
+  - put: out-repo
+    params:
+      repository: deployed-url-repo
+      rebase: true
+
+- name: System-test
+  plan:
+  - get: out-repo
+    trigger: true
+    passed: [Deploy-blue]
+
+- name: Rollback
+  plan:
+  - get: out-repo

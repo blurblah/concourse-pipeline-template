@@ -7,13 +7,12 @@ image_resource:
     repository: pivotalservices/docker-concourse-cf-tools
 
 inputs:
-- name: pipeline-repo
-- name: build-out-repo
+- name: out-repo
 
 outputs:
-- name: build-out-repo
+- name: deployed-url-repo
 
 run:
   path: /bin/bash
   args:
-  - pipeline-repo/ci/tasks/scripts/update-deploy-color.sh
+  - pipeline-repo/ci/tasks/scripts/deploy.sh
