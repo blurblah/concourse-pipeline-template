@@ -9,6 +9,7 @@ image_resource:
 
 inputs:
 - name: source-repo
+- name: pipeline-repo
 - name: out-repo
 
 outputs:
@@ -17,4 +18,4 @@ outputs:
 run:
   path: /bin/bash
   args:
-  - scripts/build-and-test.sh
+  - pipeline-repo/ci/tasks/scripts/build-and-test.sh

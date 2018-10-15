@@ -13,7 +13,11 @@ resources:
   source:
     branch: ((git.source.branch))
     uri: ((git.source.uri))
-    private_key: ((git.private_key))
+- name: pipeline-repo
+  type: git
+  source:
+    branch: master
+    uri: ((git.pipeline.uri))
 - name: out-repo
   type: git
   source:
@@ -26,6 +30,7 @@ jobs:
   plan:
   - get: source-repo
     trigger: true
+  - get: pipeline-repo
   - get: out-repo
   - task: task-build
     file: tasks/build-and-test.yml
