@@ -1,0 +1,15 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pivotalservices/docker-concourse-cf-tools
+
+inputs:
+- name: pipeline-repo
+
+run:
+  path: /bin/bash
+  args:
+  - pipeline-repo/ci/tasks/scripts/rollback-routes.sh

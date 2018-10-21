@@ -3,7 +3,7 @@ groups:
 - name: main
   jobs:
   - Build-and-test
-  - Deploy-blue
+  - Deploy-version
   - System-test
   - Rollback
 
@@ -17,7 +17,7 @@ resources:
 - name: pipeline-repo
   type: git
   source:
-    branch: master
+    branch: ((git.pipeline.branch))
     uri: ((git.pipeline.uri))
     private_key: ((git.private_key))
 - name: out-repo
@@ -26,6 +26,15 @@ resources:
     branch: master
     uri: ((git.out.uri))
     private_key: ((git.private_key))
+- name: pcf
+  type: cf
+  source:
+    api: ((pws.api))
+    organization: ((pws.organization))
+    space: ((pws.space))
+    username: ((pws.username))
+    password: ((pws.password))
+    skip_cert_check: true
 
 jobs:
 - name: Build-and-test
@@ -39,40 +48,66 @@ jobs:
     params:
       GIT_EMAIL: ((git.email))
       GIT_USERNAME: ((git.username))
-#  - put: out-repo
-#    params:
-#      repository: build-out-repo
-#      rebase: true
-  - task: task-update-deploy-color
-    file: pipeline-repo/ci/tasks/update-deploy-color.yml
+  - put: out-repo
+    params:
+      repository: build-out-repo
+      rebase: true
+  - task: task-update-deploy-version
+    file: pipeline-repo/ci/tasks/update-deploy-version.yml
     params:
       CONCOURSE_URL: ((concourse.url))
       CONCOURSE_PIPELINE: ((concourse.pipeline))
       CONCOURSE_USERNAME: ((concourse.username))
       CONCOURSE_PASSWORD: ((concourse.password))
-  - put: out-repo
-    params:
-      repository: build-out-repo
-      rebase: true
 
-- name: Deploy-blue
+- name: Deploy-version
   plan:
   - get: out-repo
     trigger: true
     passed: [Build-and-test]
-  - task: task-deploy
-    file: pipeline-repo/ci/tasks/deploy.yml
-  - put: out-repo
+  - task: task-decide-deploy-color
+    file: pipeline-repo/ci/tasks/decide-deploy-color.yml
     params:
-      repository: deployed-url-repo
-      rebase: true
+      PWS_API: ((pws.api))
+      PWS_ORG: ((pws.organization))
+      PWS_SPACE: ((pws.space))
+      PWS_APP_HOSTNAME: ((pws.app.hostname))
+      PWS_USER: ((pws.username))
+      PWS_PWD: ((pws.password))
+  - task: task-prepare-manifest
+    file: pipeline-repo/ci/tasks/prepare-manifest.yml
+  - put: pcf
+    params:
+      manifest: output/manifest.yml
+      path: output/app.jar
+  - task: task-update-routes
+    file: pipeline-repo/ci/tasks/update-routes.yml
+    params:
+      PWS_API: ((pws.api))
+      PWS_ORG: ((pws.organization))
+      PWS_SPACE: ((pws.space))
+      PWS_APP_HOSTNAME: ((pws.app.hostname))
+      PWS_USER: ((pws.username))
+      PWS_PWD: ((pws.password))
 
 - name: System-test
   plan:
-  - get: out-repo
+  - get: pipeline-repo
+  - get: pcf
     trigger: true
-    passed: [Deploy-blue]
+    passed: [Deploy-version]
+  - task: task-system-test
+    file: pipeline-repo/ci/tasks/system-test.yml
 
 - name: Rollback
   plan:
-  - get: out-repo
+  - get: pipeline-repo
+  - task: task-rollback-routes
+    file: pipeline-repo/ci/tasks/rollback-routes.yml
+    params:
+      PWS_API: ((pws.api))
+      PWS_ORG: ((pws.organization))
+      PWS_SPACE: ((pws.space))
+      PWS_APP_HOSTNAME: ((pws.app.hostname))
+      PWS_USER: ((pws.username))
+      PWS_PWD: ((pws.password))

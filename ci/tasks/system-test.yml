@@ -1,0 +1,14 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pivotalservices/docker-concourse-cf-tools
+
+run:
+  path: /bin/bash
+  args:
+  - -exc
+  - |
+    echo "Output of test job. It gets automatically triggered after a successful Build-it job."

@@ -7,12 +7,9 @@ image_resource:
     repository: pivotalservices/docker-concourse-cf-tools
 
 inputs:
-- name: out-repo
-
-outputs:
-- name: deployed-url-repo
+- name: pipeline-repo
 
 run:
   path: /bin/bash
   args:
-  - pipeline-repo/ci/tasks/scripts/deploy.sh
+  - pipeline-repo/ci/tasks/scripts/update-routes.sh

@@ -1,0 +1,19 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pivotalservices/docker-concourse-cf-tools
+
+inputs:
+- name: pipeline-repo
+- name: build-out-repo
+
+outputs:
+- name: build-out-repo
+
+run:
+  path: /bin/bash
+  args:
+  - pipeline-repo/ci/tasks/scripts/update-deploy-version.sh
