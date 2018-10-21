@@ -73,6 +73,7 @@ jobs:
       PWS_ORG: ((pws.organization))
       PWS_SPACE: ((pws.space))
       PWS_APP_HOSTNAME: ((pws.app.hostname))
+      PWS_APP_DOMAIN: ((pws.app.domain))
       PWS_USER: ((pws.username))
       PWS_PWD: ((pws.password))
   - task: task-prepare-manifest
@@ -88,6 +89,7 @@ jobs:
       PWS_ORG: ((pws.organization))
       PWS_SPACE: ((pws.space))
       PWS_APP_HOSTNAME: ((pws.app.hostname))
+      PWS_APP_DOMAIN: ((pws.app.domain))
       PWS_USER: ((pws.username))
       PWS_PWD: ((pws.password))
 
@@ -110,5 +112,6 @@ jobs:
       PWS_ORG: ((pws.organization))
       PWS_SPACE: ((pws.space))
       PWS_APP_HOSTNAME: ((pws.app.hostname))
+      PWS_APP_DOMAIN: ((pws.app.domain))
       PWS_USER: ((pws.username))
       PWS_PWD: ((pws.password))
