@@ -24,6 +24,7 @@ filename_wo_ext=${filename%.*}
 mkdir -p $filename_wo_ext
 release_candidate=${filename_wo_ext}/${filename_wo_ext}-${commit_hash}.jar
 echo $release_candidate > release_candidate.txt
+echo $commit_hash > version.txt
 
 cp -f target/*.jar ${filename_wo_ext}/${filename_wo_ext}-${commit_hash}.jar
 rm -rf target
