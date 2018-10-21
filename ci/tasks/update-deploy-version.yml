@@ -10,9 +10,6 @@ inputs:
 - name: pipeline-repo
 - name: build-out-repo
 
-outputs:
-- name: build-out-repo
-
 run:
   path: /bin/bash
   args:
