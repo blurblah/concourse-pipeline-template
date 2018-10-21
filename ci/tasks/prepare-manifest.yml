@@ -9,6 +9,7 @@ image_resource:
 inputs:
 - name: out-repo
 - name: color-info
+- name: pipeline-repo
 
 outputs:
 - name: output
