@@ -6,6 +6,9 @@ image_resource:
   source:
     repository: pivotalservices/docker-concourse-cf-tools
 
+inputs:
+- name: pipeline-repo
+
 outputs:
 - name: color-info
 

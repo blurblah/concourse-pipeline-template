@@ -62,6 +62,7 @@ jobs:
 
 - name: Deploy-version
   plan:
+  - get: pipeline-repo
   - get: out-repo
     trigger: true
     passed: [Build-and-test]
