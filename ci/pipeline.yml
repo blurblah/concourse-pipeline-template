@@ -78,6 +78,8 @@ jobs:
       PWS_PWD: ((pws.password))
   - task: task-prepare-manifest
     file: pipeline-repo/ci/tasks/prepare-manifest.yml
+    params:
+      PWS_APP_HOSTNAME: ((pws.app.hostname))
   - put: pcf
     params:
       manifest: output/manifest.yml
