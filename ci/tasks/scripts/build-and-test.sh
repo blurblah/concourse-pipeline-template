@@ -14,7 +14,7 @@ echo $commit_hash
 cd ../build-out-repo
 shopt -s dotglob
 # to move .git metadata
-mv -f ../out-repo/* ./
+mv -f ../release-candidate-dev/* ./
 
 mv -f ../source-repo/target ./
 ls -al target

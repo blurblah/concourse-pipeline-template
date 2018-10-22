@@ -10,7 +10,7 @@ image_resource:
 inputs:
 - name: source-repo
 - name: pipeline-repo
-- name: out-repo
+- name: release-candidate-dev
 
 outputs:
 - name: build-out-repo

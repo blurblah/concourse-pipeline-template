@@ -3,15 +3,18 @@ groups:
 - name: main
   jobs:
   - Build-and-test
-  - Deploy-version
+  - Deploy-to-dev-version
   - System-test
-  - Rollback
+  - Build-upon-MR-approval
+  - Deploy-to-prod
+  - Acceptance-test
+  - Ship-it
 
 resources:
 - name: source-repo
   type: git
   source:
-    branch: ((git.source.branch))
+    branch: ((git.source.branch.dev))
     uri: ((git.source.uri))
     private_key: ((git.private_key))
 - name: pipeline-repo
@@ -20,11 +23,23 @@ resources:
     branch: ((git.pipeline.branch))
     uri: ((git.pipeline.uri))
     private_key: ((git.private_key))
-- name: out-repo
+- name: release-candidate-dev
   type: git
   source:
-    branch: master
+    branch: ((git.out.branch.dev))
     uri: ((git.out.uri))
+    private_key: ((git.private_key))
+- name: release-candidate-prod
+  type: git
+  source:
+    branch: ((git.out.branch.prod))
+    uri: ((git.out.uri))
+    private_key: ((git.private_key))
+- name: deployment-approval
+  type: git
+  source:
+    branch: ((git.source.branch.prod))
+    uri: ((git.source.uri))
     private_key: ((git.private_key))
 - name: pcf
   type: cf
@@ -40,80 +55,149 @@ jobs:
 - name: Build-and-test
   plan:
   - get: source-repo
-    trigger: true
   - get: pipeline-repo
-  - get: out-repo
-  - task: task-build
+  - get: release-candidate-dev
+  - task: task-build-and-test
     file: pipeline-repo/ci/tasks/build-and-test.yml
     params:
       GIT_EMAIL: ((git.email))
       GIT_USERNAME: ((git.username))
-  - put: out-repo
+  - put: release-candidate-dev
     params:
       repository: build-out-repo
       rebase: true
-  - task: task-update-deploy-version
-    file: pipeline-repo/ci/tasks/update-deploy-version.yml
-    params:
-      CONCOURSE_URL: ((concourse.url))
-      CONCOURSE_PIPELINE: ((concourse.pipeline))
-      CONCOURSE_USERNAME: ((concourse.username))
-      CONCOURSE_PASSWORD: ((concourse.password))
+#   - task: task-update-deploy-version
+#     file: pipeline-repo/ci/tasks/update-deploy-version.yml
+#     params:
+#       CONCOURSE_URL: ((concourse.url))
+#       CONCOURSE_PIPELINE: ((concourse.pipeline))
+#       CONCOURSE_USERNAME: ((concourse.username))
+#       CONCOURSE_PASSWORD: ((concourse.password))
 
-- name: Deploy-version
-  plan:
-  - get: pipeline-repo
-  - get: out-repo
-    trigger: true
-    passed: [Build-and-test]
-  - task: task-decide-deploy-color
-    file: pipeline-repo/ci/tasks/decide-deploy-color.yml
-    params:
-      PWS_API: ((pws.api))
-      PWS_ORG: ((pws.organization))
-      PWS_SPACE: ((pws.space))
-      PWS_APP_HOSTNAME: ((pws.app.hostname))
-      PWS_APP_DOMAIN: ((pws.app.domain))
-      PWS_USER: ((pws.username))
-      PWS_PWD: ((pws.password))
-  - task: task-prepare-manifest
-    file: pipeline-repo/ci/tasks/prepare-manifest.yml
-    params:
-      PWS_APP_HOSTNAME: ((pws.app.hostname))
-  - put: pcf
-    params:
-      manifest: output/manifest.yml
-      path: output/app.jar
-  - task: task-update-routes
-    file: pipeline-repo/ci/tasks/update-routes.yml
-    params:
-      PWS_API: ((pws.api))
-      PWS_ORG: ((pws.organization))
-      PWS_SPACE: ((pws.space))
-      PWS_APP_HOSTNAME: ((pws.app.hostname))
-      PWS_APP_DOMAIN: ((pws.app.domain))
-      PWS_USER: ((pws.username))
-      PWS_PWD: ((pws.password))
+# - name: Deploy-to-dev-version
+#   plan:
+#   - get: pipeline-repo
+#   - get: release-candidate
+#     passed: [Build-and-test]
+#     trigger: true
+#   - put: pcf
+#
+# - name: System-test
+#   plan:
+#   - get: pipeline-repo
+#   - get: pcf
+#     passed: [Deploy-to-dev-version]
+#     trigger: true
+#
+# - name: Build-upon-MR-approval
+#   disable_manual_trigger: true
+#   plan:
+#   - get: pipeline-repo
+#     passed: [System-test]
+#   - get: deployment-approval
+#     trigger: true
+#   - put: release-candidate
+#
+# - name: Deploy-to-prod
+#   plan:
+#   - get: pipeline-repo
+#   - get: release-candidate
+#     passed: [Build-upon-MR-approval]
+#     trigger: true
+#   - put: pcf
+#
+# - name: Acceptance-test
+#   plan:
+#   - get: pipeline-repo
+#   - get: pcf
+#     passed: [Deploy-to-prod]
+#     trigger: true
+#
+# - name: Ship-it
+#   plan:
+#   - get: pipeline-repo
+#   - get: pcf
+#     passed: [Acceptance-test]
+#     trigger: false
 
-- name: System-test
-  plan:
-  - get: pipeline-repo
-  - get: pcf
-    trigger: true
-    passed: [Deploy-version]
-  - task: task-system-test
-    file: pipeline-repo/ci/tasks/system-test.yml
-
-- name: Rollback
-  plan:
-  - get: pipeline-repo
-  - task: task-rollback-routes
-    file: pipeline-repo/ci/tasks/rollback-routes.yml
-    params:
-      PWS_API: ((pws.api))
-      PWS_ORG: ((pws.organization))
-      PWS_SPACE: ((pws.space))
-      PWS_APP_HOSTNAME: ((pws.app.hostname))
-      PWS_APP_DOMAIN: ((pws.app.domain))
-      PWS_USER: ((pws.username))
-      PWS_PWD: ((pws.password))
+# jobs:
+# - name: Build-and-test
+#   plan:
+#   - get: source-repo
+#     trigger: true
+#   - get: pipeline-repo
+#   - get: out-repo
+#   - task: task-build
+#     file: pipeline-repo/ci/tasks/build-and-test.yml
+#     params:
+#       GIT_EMAIL: ((git.email))
+#       GIT_USERNAME: ((git.username))
+#   - put: out-repo
+#     params:
+#       repository: build-out-repo
+#       rebase: true
+#   - task: task-update-deploy-version
+#     file: pipeline-repo/ci/tasks/update-deploy-version.yml
+#     params:
+#       CONCOURSE_URL: ((concourse.url))
+#       CONCOURSE_PIPELINE: ((concourse.pipeline))
+#       CONCOURSE_USERNAME: ((concourse.username))
+#       CONCOURSE_PASSWORD: ((concourse.password))
+#
+# - name: Deploy-version
+#   plan:
+#   - get: pipeline-repo
+#   - get: out-repo
+#     trigger: true
+#     passed: [Build-and-test]
+#   - task: task-decide-deploy-color
+#     file: pipeline-repo/ci/tasks/decide-deploy-color.yml
+#     params:
+#       PWS_API: ((pws.api))
+#       PWS_ORG: ((pws.organization))
+#       PWS_SPACE: ((pws.space))
+#       PWS_APP_HOSTNAME: ((pws.app.hostname))
+#       PWS_APP_DOMAIN: ((pws.app.domain))
+#       PWS_USER: ((pws.username))
+#       PWS_PWD: ((pws.password))
+#   - task: task-prepare-manifest
+#     file: pipeline-repo/ci/tasks/prepare-manifest.yml
+#     params:
+#       PWS_APP_HOSTNAME: ((pws.app.hostname))
+#   - put: pcf
+#     params:
+#       manifest: output/manifest.yml
+#       path: output/app.jar
+#   - task: task-update-routes
+#     file: pipeline-repo/ci/tasks/update-routes.yml
+#     params:
+#       PWS_API: ((pws.api))
+#       PWS_ORG: ((pws.organization))
+#       PWS_SPACE: ((pws.space))
+#       PWS_APP_HOSTNAME: ((pws.app.hostname))
+#       PWS_APP_DOMAIN: ((pws.app.domain))
+#       PWS_USER: ((pws.username))
+#       PWS_PWD: ((pws.password))
+#
+# - name: System-test
+#   plan:
+#   - get: pipeline-repo
+#   - get: pcf
+#     trigger: true
+#     passed: [Deploy-version]
+#   - task: task-system-test
+#     file: pipeline-repo/ci/tasks/system-test.yml
+#
+# - name: Rollback
+#   plan:
+#   - get: pipeline-repo
+#   - task: task-rollback-routes
+#     file: pipeline-repo/ci/tasks/rollback-routes.yml
+#     params:
+#       PWS_API: ((pws.api))
+#       PWS_ORG: ((pws.organization))
+#       PWS_SPACE: ((pws.space))
+#       PWS_APP_HOSTNAME: ((pws.app.hostname))
+#       PWS_APP_DOMAIN: ((pws.app.domain))
+#       PWS_USER: ((pws.username))
+#       PWS_PWD: ((pws.password))
