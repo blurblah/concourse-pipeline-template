@@ -90,11 +90,19 @@ jobs:
 - name: System-test
   plan:
   - get: pipeline-repo
+  - get: source-repo
   - get: release-candidate-dev
     passed: [Deploy-to-dev-version]
     trigger: true
   - task: task-system-test
     file: pipeline-repo/ci/tasks/system-test.yml
+  - task: task-create-merge-request
+    file: pipeline-repo/ci/tasks/create-merge-request.yml
+    params:
+      GITLAB_HOST: ((git.host))
+      GITLAB_USERNAME: ((git.username))
+      GITLAB_TOKEN: ((git.token))
+      PROD_BRANCH: ((git.source.branch.prod))
 
 - name: Build-upon-MR-approval
   disable_manual_trigger: true
