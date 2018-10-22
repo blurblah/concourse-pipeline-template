@@ -4,6 +4,7 @@ set -xe
 
 cd pipeline-repo/bin
 tar xvfz lab_*.tar.gz
+chmod +x lab
 
 mkdir -p ~/.config
 lab_config=~/.config/lab.hcl
@@ -14,6 +15,6 @@ echo "  \"user\" = \"$GITLAB_USERNAME\"" >> $lab_config
 echo "}" >> $lab_config
 cat $lab_config
 
-version=$(cat ../release-candidate-dev/version.txt)
+version=$(cat ../../release-candidate-dev/version.txt)
 cd ../../source-repo
 ../pipeline-repo/bin/lab mr create origin $PROD_BRANCH -m "Promote and deploy release $version"
