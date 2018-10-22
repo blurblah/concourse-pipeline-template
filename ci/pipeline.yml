@@ -17,6 +17,7 @@ resources:
     branch: ((git.source.branch.dev))
     uri: ((git.source.uri))
     private_key: ((git.private_key))
+  check_every: 1m
 - name: pipeline-repo
   type: git
   source:
@@ -64,6 +65,7 @@ jobs:
 - name: Build-and-test
   plan:
   - get: source-repo
+    trigger: true
   - get: pipeline-repo
   - get: release-candidate-dev
   - task: task-build-and-test
