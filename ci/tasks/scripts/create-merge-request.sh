@@ -17,4 +17,7 @@ cat $lab_config
 
 version=$(cat ../../release-candidate-dev/version.txt)
 cd ../../source-repo
+git log -3
+git branch
+git remote -v
 ../pipeline-repo/bin/lab mr create origin $PROD_BRANCH -m "Promote and deploy release $version"
