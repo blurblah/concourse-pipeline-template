@@ -10,8 +10,6 @@ cd source-repo
 #mvn clean package
 commit_hash=$(git rev-parse HEAD | cut -c 1-8)
 echo $commit_hash
-# for test
-git status
 
 cd ../build-out-repo
 shopt -s dotglob

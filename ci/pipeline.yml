@@ -102,7 +102,8 @@ jobs:
       GITLAB_HOST: ((git.host))
       GITLAB_USERNAME: ((git.username))
       GITLAB_TOKEN: ((git.token))
-      PROD_BRANCH: ((git.source.branch.prod))
+      SOURCE_DEV_BRANCH: ((git.source.branch.dev))
+      SOURCE_PROD_BRANCH: ((git.source.branch.prod))
 
 - name: Build-upon-MR-approval
   disable_manual_trigger: true
