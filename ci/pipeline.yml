@@ -119,11 +119,12 @@ jobs:
 - name: Build-upon-MR-approval
   disable_manual_trigger: true
   plan:
-  - get: pipeline-repo
-    passed: [System-test]
-  - get: release-candidate-prod
   - get: deployment-approval
     trigger: true
+  - get: pipeline-repo
+    passed: [System-test]
+    trigger: false
+  - get: release-candidate-prod
   - task: task-build-prod
     file: pipeline-repo/ci/tasks/build-prod.yml
     params:
