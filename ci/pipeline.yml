@@ -115,10 +115,11 @@ jobs:
       SOURCE_PROD_BRANCH: ((git.source.branch.prod))
 
 - name: Build-upon-MR-approval
-#  disable_manual_trigger: true
+  disable_manual_trigger: true
   plan:
   - get: pipeline-repo
     passed: [System-test]
+  - get: release-candidate-prod
   - get: deployment-approval
     trigger: true
   - task: task-build-prod
@@ -128,7 +129,7 @@ jobs:
       GIT_USERNAME: ((git.username))
   - put: release-candidate-prod
     params:
-      repository: build-out-repo
+      repository: build-prod-out-repo
       rebase: true
 
 - name: Deploy-to-prod
@@ -154,7 +155,7 @@ jobs:
       PWS_APP_HOSTNAME: ((pws.app.hostname))
   - put: pcf-prod
     params:
-      manifest: output/manifest.yml
+      manifest: output-prod/manifest.yml
 
 - name: Acceptance-test
   plan:

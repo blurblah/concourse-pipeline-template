@@ -13,7 +13,7 @@ inputs:
 - name: release-candidate-prod
 
 outputs:
-- name: build-out-repo
+- name: build-prod-out-repo
 
 run:
   path: /bin/bash

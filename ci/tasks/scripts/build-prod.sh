@@ -11,7 +11,7 @@ cd deployment-approval
 commit_hash=$(git rev-parse HEAD | cut -c 1-8)
 echo $commit_hash
 
-cd ../build-out-repo
+cd ../build-prod-out-repo
 shopt -s dotglob
 # to move .git metadata
 mv -f ../release-candidate-prod/* ./

@@ -2,7 +2,7 @@
 
 set -xe
 
-cd output
+cd output-prod
 release_candidate=$(cat ../release-candidate-prod/release_candidate.txt)
 cp -f ../release-candidate-prod/$release_candidate ./app.jar
 

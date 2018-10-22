@@ -13,7 +13,7 @@ inputs:
 - name: color-info
 
 outputs:
-- name: output
+- name: output-prod
 
 run:
   path: /bin/bash
