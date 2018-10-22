@@ -12,3 +12,4 @@ run:
   - -exc
   - |
     echo "Output of test job. It gets automatically triggered after a successful Build-it job."
+    echo "Test passed!"

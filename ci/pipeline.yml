@@ -90,9 +90,11 @@ jobs:
 - name: System-test
   plan:
   - get: pipeline-repo
-  - get: pcf
+  - get: release-candidate-dev
     passed: [Deploy-to-dev-version]
-    trigger: false
+    trigger: true
+  - task: task-system-test
+    file: pipeline-repo/ci/tasks/system-test.yml
 
 - name: Build-upon-MR-approval
   disable_manual_trigger: true
