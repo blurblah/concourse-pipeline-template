@@ -83,9 +83,9 @@ jobs:
     trigger: true
   - task: task-prepare-manifest
     file: pipeline-repo/ci/tasks/prepare-manifest.yml
-    params:
-      PWS_APP_HOSTNAME: ((pws.app.hostname))
   - put: pcf
+    params:
+      manifest: output/manifest.yml
 
 - name: System-test
   plan:
