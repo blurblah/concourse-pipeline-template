@@ -10,7 +10,7 @@ chmod +x fly
 ./fly -t local get-pipeline -p ${CONCOURSE_PIPELINE} > original-pipeline.yml
 
 version=$(cat ../../build-out-repo/version.txt)
-sed "s/Deploy-.*/Deploy-${version}/" original-pipeline.yml > updated-pipeline.yml
+sed "s/Deploy-to-dev-.*/Deploy-to-dev-${version}/" original-pipeline.yml > updated-pipeline.yml
 cat updated-pipeline.yml
 
 ./fly -t local set-pipeline -p ${CONCOURSE_PIPELINE} -c updated-pipeline.yml -n
