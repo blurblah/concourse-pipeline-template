@@ -1,0 +1,21 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: myminseok/java8_git_mvn
+    tag: v2
+
+inputs:
+- name: deployment-approval
+- name: pipeline-repo
+- name: release-candidate-prod
+
+outputs:
+- name: build-out-repo
+
+run:
+  path: /bin/bash
+  args:
+  - pipeline-repo/ci/tasks/scripts/build-prod.sh

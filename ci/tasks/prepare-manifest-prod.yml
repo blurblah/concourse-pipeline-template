@@ -1,0 +1,21 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pivotalservices/docker-concourse-cf-tools
+
+inputs:
+- name: release-candidate-prod
+- name: pipeline-repo
+- name: deployment-approval
+- name: color-info
+
+outputs:
+- name: output
+
+run:
+  path: /bin/bash
+  args:
+  - pipeline-repo/ci/tasks/scripts/prepare-manifest-prod.sh
