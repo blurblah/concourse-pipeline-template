@@ -77,9 +77,14 @@ jobs:
 - name: Deploy-to-dev-version
   plan:
   - get: pipeline-repo
+  - get: source-repo
   - get: release-candidate-dev
     passed: [Build-and-test]
-    trigger: false
+    trigger: true
+  - task: task-prepare-manifest
+    file: pipeline-repo/ci/tasks/prepare-manifest.yml
+    params:
+      PWS_APP_HOSTNAME: ((pws.app.hostname))
   - put: pcf
 
 - name: System-test

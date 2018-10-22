@@ -7,9 +7,9 @@ image_resource:
     repository: pivotalservices/docker-concourse-cf-tools
 
 inputs:
-- name: out-repo
-- name: color-info
+- name: release-candidate-dev
 - name: pipeline-repo
+- name: source-repo
 
 outputs:
 - name: output
