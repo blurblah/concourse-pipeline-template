@@ -18,7 +18,7 @@ resources:
     branch: ((git.source.branch.dev))
     uri: ((git.source.uri))
     private_key: ((git.private_key))
-  check_every: 1m
+  check_every: 10s
 - name: pipeline-repo
   type: git
   source:
@@ -196,7 +196,7 @@ jobs:
   serial: true
   plan:
   - get: pipeline-repo
-    passed: [Acceptance-test]
+    passed: [Ship-it]
     trigger: false
   - task: task-rollback-routes
     file: pipeline-repo/ci/tasks/rollback-routes.yml
