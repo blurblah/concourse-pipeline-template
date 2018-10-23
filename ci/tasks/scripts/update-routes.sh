@@ -18,7 +18,7 @@ cf map-route "$PWS_APP_HOSTNAME-$next_color" $PWS_APP_DOMAIN --hostname $PWS_APP
 
 echo "Removing current service app route that pointed to $PWS_APP_HOSTNAME-$curr_color instance"
 is_exist_current_app=`cf apps | grep "$PWS_APP_HOSTNAME.$PWS_APP_DOMAIN" | grep "$PWS_APP_HOSTNAME\-$curr_color" | wc -l || true`
-if [ $is_exist_current_app -ne 0 ]
+if [ -n "$curr_color" ] && [ $is_exist_current_app -ne 0 ]
 then
     echo "$PWS_APP_HOSTNAME-$curr_color exists!"
     cf unmap-route "$PWS_APP_HOSTNAME-$curr_color" $PWS_APP_DOMAIN --hostname $PWS_APP_HOSTNAME
