@@ -5,12 +5,12 @@ set -xe
 cf api $PWS_API --skip-ssl-validation
 cf login -u $PWS_USER -p $PWS_PWD -o "$PWS_ORG" -s "$PWS_SPACE"
 
-next_color=$(cat color-info/next_color.txt)
-if [ "$next_color" == "blue" ]
+curr_color=`cf apps | grep "$PWS_APP_HOSTNAME.$PWS_APP_DOMAIN" | cut -d' ' -f1 | awk -F"-" '{print $NF}'`
+if [ "$curr_color" == "blue" ]
 then
-    curr_color="green"
+    next_color="green"
 else
-    curr_color="blue"
+    next_color="blue"
 fi
 
 echo "Mapping main app route to point to $PWS_APP_HOSTNAME-$next_color instance"

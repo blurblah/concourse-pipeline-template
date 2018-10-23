@@ -8,7 +8,6 @@ image_resource:
 
 inputs:
 - name: pipeline-repo
-- name: color-info
 
 run:
   path: /bin/bash
