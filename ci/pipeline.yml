@@ -1,6 +1,6 @@
 ---
 groups:
-- name: main
+- name: base
   jobs:
   - Build-and-test
   - Deploy-to-dev-version
