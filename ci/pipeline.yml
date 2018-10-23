@@ -179,6 +179,7 @@ jobs:
   serial: true
   plan:
   - get: pipeline-repo
+  - get: release-candidate-prod
     passed: [Acceptance-test]
     trigger: false
   - task: task-update-routes
@@ -196,6 +197,7 @@ jobs:
   serial: true
   plan:
   - get: pipeline-repo
+  - get: release-candidate-prod
     passed: [Ship-it]
     trigger: false
   - task: task-rollback-routes

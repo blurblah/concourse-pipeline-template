@@ -12,4 +12,4 @@ inputs:
 run:
   path: /bin/bash
   args:
-  - pipeline-repo/ci/tasks/scripts/rollback-routes.sh
+  - pipeline-repo/ci/tasks/scripts/update-routes.sh
