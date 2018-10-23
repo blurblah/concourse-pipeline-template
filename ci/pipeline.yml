@@ -63,6 +63,7 @@ resources:
 
 jobs:
 - name: Build-and-test
+  serial: true
   plan:
   - get: source-repo
     trigger: true
@@ -86,6 +87,7 @@ jobs:
       CONCOURSE_PASSWORD: ((concourse.password))
 
 - name: Deploy-to-dev-version
+  serial: true
   plan:
   - get: pipeline-repo
   - get: source-repo
@@ -99,6 +101,7 @@ jobs:
       manifest: output/manifest.yml
 
 - name: System-test
+  serial: true
   plan:
   - get: pipeline-repo
   - get: source-repo
@@ -118,12 +121,12 @@ jobs:
 
 - name: Build-upon-MR-approval
   disable_manual_trigger: true
+  serial: true
   plan:
   - get: deployment-approval
     trigger: true
   - get: pipeline-repo
     passed: [System-test]
-    trigger: false
   - get: release-candidate-prod
   - task: task-build-prod
     file: pipeline-repo/ci/tasks/build-prod.yml
@@ -136,6 +139,7 @@ jobs:
       rebase: true
 
 - name: Deploy-to-prod
+  serial: true
   plan:
   - get: pipeline-repo
   - get: deployment-approval
@@ -161,6 +165,7 @@ jobs:
       manifest: output-prod/manifest.yml
 
 - name: Acceptance-test
+  serial: true
   plan:
   - get: pipeline-repo
   - get: release-candidate-prod
@@ -170,6 +175,7 @@ jobs:
     file: pipeline-repo/ci/tasks/system-test.yml
 
 - name: Ship-it
+  serial: true
   plan:
   - get: pipeline-repo
     passed: [Acceptance-test]
@@ -184,85 +190,3 @@ jobs:
       PWS_APP_DOMAIN: ((pws.app.domain))
       PWS_USER: ((pws.username))
       PWS_PWD: ((pws.password))
-
-# jobs:
-# - name: Build-and-test
-#   plan:
-#   - get: source-repo
-#     trigger: true
-#   - get: pipeline-repo
-#   - get: out-repo
-#   - task: task-build
-#     file: pipeline-repo/ci/tasks/build-and-test.yml
-#     params:
-#       GIT_EMAIL: ((git.email))
-#       GIT_USERNAME: ((git.username))
-#   - put: out-repo
-#     params:
-#       repository: build-out-repo
-#       rebase: true
-#   - task: task-update-deploy-version
-#     file: pipeline-repo/ci/tasks/update-deploy-version.yml
-#     params:
-#       CONCOURSE_URL: ((concourse.url))
-#       CONCOURSE_PIPELINE: ((concourse.pipeline))
-#       CONCOURSE_USERNAME: ((concourse.username))
-#       CONCOURSE_PASSWORD: ((concourse.password))
-#
-# - name: Deploy-version
-#   plan:
-#   - get: pipeline-repo
-#   - get: out-repo
-#     trigger: true
-#     passed: [Build-and-test]
-#   - task: task-decide-deploy-color
-#     file: pipeline-repo/ci/tasks/decide-deploy-color.yml
-#     params:
-#       PWS_API: ((pws.api))
-#       PWS_ORG: ((pws.organization))
-#       PWS_SPACE: ((pws.space))
-#       PWS_APP_HOSTNAME: ((pws.app.hostname))
-#       PWS_APP_DOMAIN: ((pws.app.domain))
-#       PWS_USER: ((pws.username))
-#       PWS_PWD: ((pws.password))
-#   - task: task-prepare-manifest
-#     file: pipeline-repo/ci/tasks/prepare-manifest.yml
-#     params:
-#       PWS_APP_HOSTNAME: ((pws.app.hostname))
-#   - put: pcf
-#     params:
-#       manifest: output/manifest.yml
-#       path: output/app.jar
-#   - task: task-update-routes
-#     file: pipeline-repo/ci/tasks/update-routes.yml
-#     params:
-#       PWS_API: ((pws.api))
-#       PWS_ORG: ((pws.organization))
-#       PWS_SPACE: ((pws.space))
-#       PWS_APP_HOSTNAME: ((pws.app.hostname))
-#       PWS_APP_DOMAIN: ((pws.app.domain))
-#       PWS_USER: ((pws.username))
-#       PWS_PWD: ((pws.password))
-#
-# - name: System-test
-#   plan:
-#   - get: pipeline-repo
-#   - get: pcf
-#     trigger: true
-#     passed: [Deploy-version]
-#   - task: task-system-test
-#     file: pipeline-repo/ci/tasks/system-test.yml
-#
-# - name: Rollback
-#   plan:
-#   - get: pipeline-repo
-#   - task: task-rollback-routes
-#     file: pipeline-repo/ci/tasks/rollback-routes.yml
-#     params:
-#       PWS_API: ((pws.api))
-#       PWS_ORG: ((pws.organization))
-#       PWS_SPACE: ((pws.space))
-#       PWS_APP_HOSTNAME: ((pws.app.hostname))
-#       PWS_APP_DOMAIN: ((pws.app.domain))
-#       PWS_USER: ((pws.username))
-#       PWS_PWD: ((pws.password))
