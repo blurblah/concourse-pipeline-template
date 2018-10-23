@@ -9,6 +9,7 @@ groups:
   - Deploy-to-prod
   - Acceptance-test
   - Ship-it
+  - Rollback
 
 resources:
 - name: source-repo
@@ -182,6 +183,23 @@ jobs:
     trigger: false
   - task: task-update-routes
     file: pipeline-repo/ci/tasks/update-routes.yml
+    params:
+      PWS_API: ((pws.api))
+      PWS_ORG: ((pws.organization))
+      PWS_SPACE: ((pws.space.prod))
+      PWS_APP_HOSTNAME: ((pws.app.hostname))
+      PWS_APP_DOMAIN: ((pws.app.domain))
+      PWS_USER: ((pws.username))
+      PWS_PWD: ((pws.password))
+
+- name: Rollback
+  serial: true
+  plan:
+  - get: pipeline-repo
+    passed: [Acceptance-test]
+    trigger: false
+  - task: task-rollback-routes
+    file: pipeline-repo/ci/tasks/rollback-routes.yml
     params:
       PWS_API: ((pws.api))
       PWS_ORG: ((pws.organization))
