@@ -42,4 +42,5 @@ If you push commits for your application, first job in your pipeline will start 
 
 ## References
 https://github.com/myminseok/articulate-ci-demo
+
 https://github.com/pivotalservices/concourse-pipeline-samples/tree/master/concourse-pipeline-patterns
