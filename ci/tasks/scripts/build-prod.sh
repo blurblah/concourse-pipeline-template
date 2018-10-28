@@ -4,7 +4,7 @@ set -xe
 
 mkdir -p /root/.m2/repository
 cp -r /app/m2/* /root/.m2/repository/
-mv -f /root/.m2/repository/settings*.xml /root/.m2/
+#mv -f /root/.m2/repository/settings*.xml /root/.m2/
 
 cd deployment-approval
 curr_dir=$(pwd)
