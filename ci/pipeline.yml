@@ -97,6 +97,8 @@ jobs:
     trigger: true
   - task: task-prepare-manifest
     file: pipeline-repo/ci/tasks/prepare-manifest.yml
+    params:
+      PWS_SPACE: ((pws.space.dev))
   - put: pcf-dev
     params:
       manifest: output/manifest.yml
