@@ -75,6 +75,7 @@ jobs:
     params:
       GIT_EMAIL: ((git.email))
       GIT_USERNAME: ((git.username))
+      PROJECT_ROOT: ((git.source.project_root))
   - put: release-candidate-dev
     params:
       repository: build-out-repo
@@ -99,6 +100,7 @@ jobs:
     file: pipeline-repo/ci/tasks/prepare-manifest.yml
     params:
       PWS_SPACE: ((pws.space.dev))
+      PROJECT_ROOT: ((git.source.project_root))
   - put: pcf-dev
     params:
       manifest: output/manifest.yml
@@ -136,6 +138,7 @@ jobs:
     params:
       GIT_EMAIL: ((git.email))
       GIT_USERNAME: ((git.username))
+      PROJECT_ROOT: ((git.source.project_root))
   - put: release-candidate-prod
     params:
       repository: build-prod-out-repo
@@ -163,6 +166,7 @@ jobs:
     file: pipeline-repo/ci/tasks/prepare-manifest-prod.yml
     params:
       PWS_APP_HOSTNAME: ((pws.app.hostname))
+      PROJECT_ROOT: ((git.source.project_root))
   - put: pcf-prod
     params:
       manifest: output-prod/manifest.yml
