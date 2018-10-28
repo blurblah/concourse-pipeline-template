@@ -1,10 +1,12 @@
 ---
 groups:
-- name: base
+- name: dev
   jobs:
   - Build-and-test
   - Deploy-to-dev-version
   - System-test
+- name: prod
+  jobs:
   - Build-upon-MR-approval
   - Deploy-to-prod
   - Acceptance-test
